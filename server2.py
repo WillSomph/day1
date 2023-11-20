@@ -4,10 +4,10 @@ import time
 from threading import Thread
 
 app = Flask(__name__)
-directory_server_url = "http://localhost:8080"
+server3_url = "http://localhost:9090"  # Assuming Server 3 runs on port 9090
 
 def get_server1_address():
-    response = requests.get(directory_server_url + "/server1")
+    response = requests.get(server3_url + "/get_address/server1")
     return response.json()["address"]
 
 def send_pong():
@@ -21,6 +21,10 @@ def send_pong():
         except requests.exceptions.RequestException as e:
             print("Error sending pong:", e)
 
+def register_with_server3():
+    my_address = "http://localhost:5372"  # Adjust the port as needed
+    requests.post(server3_url + "/register", json={"server": "server2", "address": my_address})
+
 @app.route('/ping')
 def ping():
     return "ping"
@@ -29,4 +33,5 @@ if __name__ == '__main__':
     pong_thread = Thread(target=send_pong)
     pong_thread.start()
 
+    register_with_server3()  # Register with Server 3
     app.run(port=5372)
