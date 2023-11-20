@@ -1,12 +1,18 @@
-from flask import Flask
+from flask import Flask, request
 import requests
 import time
 from threading import Thread
 
 app = Flask(__name__)
-server1_url = "http://localhost:4567"
+directory_server_url = "http://localhost:8080"
+
+def get_server1_address():
+    response = requests.get(directory_server_url + "/server1")
+    return response.json()["address"]
 
 def send_pong():
+    server1_url = get_server1_address()
+
     while True:
         time.sleep(0.5)
         try:
@@ -22,4 +28,5 @@ def ping():
 if __name__ == '__main__':
     pong_thread = Thread(target=send_pong)
     pong_thread.start()
+
     app.run(port=5372)
