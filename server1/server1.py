@@ -22,6 +22,7 @@ def send_ping():
 
 @app.route('/pong')
 def pong():
+    response=requests.post("http://localhost:1111/forward_message",json={"destination":1,"message":"pong"})
     return "pong"
 
 if __name__ == '__main__':
